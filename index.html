@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ストレス（仕事/上司/職場）×自己分析（自分軸）｜総合セルフチェック</title>
+  <style>
+    :root{
+      --bg:#0b0f14; --card:#111826; --muted:#9aa4b2; --text:#e6edf3;
+      --line:#1f2a3a; --good:#2ea043; --warn:#d29922; --mid:#f78166; --bad:#f85149;
+      --btn:#1f6feb; --btn2:#30363d;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",sans-serif;background:var(--bg);color:var(--text)}
+    .wrap{max-width:980px;margin:0 auto;padding:18px}
+    h1{font-size:20px;margin:6px 0 10px}
+    .sub{color:var(--muted);font-size:13px;line-height:1.6}
+    .row{display:flex;gap:12px;flex-wrap:wrap}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin:12px 0}
+    .card h2{font-size:16px;margin:0 0 10px}
+    .card h3{font-size:14px;margin:14px 0 8px;color:#c9d1d9}
+    .pill{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px;border:1px solid var(--line);color:#c9d1d9}
+    .pill.good{border-color:rgba(46,160,67,.5);color:var(--good)}
+    .pill.warn{border-color:rgba(210,153,34,.6);color:var(--warn)}
+    .pill.mid{border-color:rgba(247,129,102,.6);color:var(--mid)}
+    .pill.bad{border-color:rgba(248,81,73,.6);color:var(--bad)}
+    .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+    button{appearance:none;border:1px solid var(--line);background:var(--btn2);color:var(--text);
+      padding:10px 12px;border-radius:10px;cursor:pointer;font-weight:700}
+    button.primary{background:var(--btn);border-color:rgba(31,111,235,.7)}
+    button.ghost{background:transparent}
+    button.small{padding:8px 10px;font-size:13px}
+    .tabbtn.active{outline:2px solid rgba(121,192,255,.25)}
+    .grid{display:grid;grid-template-columns:1fr;gap:10px}
+    @media(min-width:860px){ .grid{grid-template-columns:1fr 1fr} }
+    details{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:rgba(255,255,255,.02)}
+    summary{list-style:none;cursor:pointer;padding:12px 12px;font-weight:800}
+    summary::-webkit-details-marker{display:none}
+    .qwrap{padding:0 12px 12px}
+    .q{border-top:1px solid var(--line);padding:10px 0}
+    .q:first-child{border-top:0}
+    .qtxt{font-size:14px;line-height:1.5}
+    .radios{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;color:var(--muted);font-size:13px}
+    .radios label{display:flex;gap:6px;align-items:center;border:1px solid var(--line);padding:6px 8px;border-radius:10px;cursor:pointer}
+    .radios input{accent-color:#79c0ff}
+    .muted{color:var(--muted);font-size:12px;line-height:1.6}
+    textarea{width:100%;min-height:78px;background:#0f1623;color:var(--text);border:1px solid var(--line);border-radius:12px;padding:10px;resize:vertical}
+    .kpi{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0}
+    .kpi .box{background:rgba(255,255,255,.02);border:1px solid var(--line);border-radius:12px;padding:10px 12px;min-width:200px}
+    .kpi .num{font-size:20px;font-weight:900;margin-top:4px}
+    .list{margin:0;padding-left:18px;color:#c9d1d9}
+    .hr{height:1px;background:var(--line);margin:12px 0}
+    .foot{margin-top:16px;color:var(--muted);font-size:12px;line-height:1.7}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <h1>ストレス（仕事/上司/職場）×自己分析（自分軸）｜総合セルフチェック</h1>
+  <div class="sub">
+    0=問題なし / 1=軽い / 2=中 / 3=強い（ほぼ毎日・睡眠/体調にも影響）<br>
+    ※医療的な診断ではありません。個人情報（会社名・氏名など）は入力しないでください。
+  </div>
+
+  <div class="tabs">
+    <button class="tabbtn active" data-tab="stress">① ストレス</button>
+    <button class="tabbtn" data-tab="self">② 自己分析</button>
+    <button class="tabbtn" data-tab="result">③ 結果</button>
+  </div>
+
+  <div id="tab-stress" class="card">
+    <h2>① ストレス度（仕事/上司/職場）</h2>
+    <div class="muted">
+      判定（あなたの現行アプリと同じ想定）：
+      <ul class="list">
+        <li>各カテゴリ（0〜30）：0〜7=緑 / 8〜15=黄 / 16〜23=橙 / 24〜30=赤</li>
+        <li>総合（0〜90）：0〜20=緑 / 21〜40=黄 / 41〜60=橙 / 61〜90=赤</li>
+      </ul>
+      ※質問文はあとで入れ替えOK（配列の文章を差し替えるだけ）
+    </div>
+    <div class="grid" id="stress-accordions"></div>
+
+    <div class="hr"></div>
+    <h3>補足（任意）</h3>
+    <div class="row">
+      <div style="flex:1;min-width:260px">
+        <textarea id="note_deadline" placeholder="期限・直近イベント（例：来週面談、今週合意など）"></textarea>
+      </div>
+      <div style="flex:1;min-width:260px">
+        <textarea id="note_risk" placeholder="避けたい事故（例：手戻り、責任転嫁、体調悪化など）"></textarea>
+      </div>
+    </div>
+    <div style="margin-top:8px">
+      <textarea id="note_context" placeholder="状況（200字くらい／個人情報なし）"></textarea>
+    </div>
+
+    <div class="row" style="margin-top:12px">
+      <button class="primary" id="btn_calc">計算する（①②まとめて）</button>
+      <button class="ghost" id="btn_reset">リセット</button>
+      <button class="small" id="btn_to_result">結果へ（③）</button>
+    </div>
+  </div>
+
+  <div id="tab-self" class="card" style="display:none">
+    <h2>② 自己分析（自分軸チェック｜40代後半向け）</h2>
+    <div class="muted">「他人や周囲の話はできるのに、自分の軸が薄くなってる」サインを見える化します。0〜3で選ぶだけ。</div>
+    <div class="grid" id="self-accordions"></div>
+
+    <div class="hr"></div>
+    <div class="row">
+      <button class="primary" id="btn_calc2">計算する（①②まとめて）</button>
+      <button class="small" id="btn_to_result2">結果へ（③）</button>
+    </div>
+  </div>
+
+  <div id="tab-result" class="card" style="display:none">
+    <h2>③ 結果（総合評価）</h2>
+
+    <div class="kpi">
+      <div class="box">
+        <div class="pill">ストレス総合（0-90）</div>
+        <div class="num" id="k_stress">-</div>
+        <div id="k_stress_level"></div>
+      </div>
+      <div class="box">
+        <div class="pill">自己分析総合（0-90）</div>
+        <div class="num" id="k_self">-</div>
+        <div id="k_self_level"></div>
+      </div>
+      <div class="box">
+        <div class="pill">総合</div>
+        <div class="num" id="k_overall">-</div>
+        <div id="k_overall_level"></div>
+      </div>
+    </div>
+
+    <div class="hr"></div>
+    <h3>カテゴリ内訳</h3>
+    <div class="row" id="breakdowns"></div>
+
+    <div class="hr"></div>
+    <h3>点数が高かった項目（上位10）</h3>
+    <ol class="list" id="top_items"></ol>
+
+    <div class="hr"></div>
+    <h3>今日の一手（目安）</h3>
+    <div id="next_action" style="line-height:1.7"></div>
+
+    <div class="hr"></div>
+    <h3>AI用プロンプト</h3>
+    <div class="muted">このままChatGPT等へ貼り付け（個人情報なし）</div>
+    <textarea id="prompt" class="mono" style="min-height:220px"></textarea>
+    <div class="row" style="margin-top:10px">
+      <button class="primary" id="btn_copy_prompt">プロンプトをコピー</button>
+      <button class="small" id="btn_copy_result">結果（点数）をコピー</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const SCALE = [
+    {v:0, label:"0 問題なし"},
+    {v:1, label:"1 軽い"},
+    {v:2, label:"2 中"},
+    {v:3, label:"3 強い"},
+  ];
+
+  const LEVELS = [
+    {name:"緑", cls:"good"},
+    {name:"黄", cls:"warn"},
+    {name:"橙", cls:"mid"},
+    {name:"赤", cls:"bad"},
+  ];
+
+  function levelFromTotal90(total){
+    if(total <= 20) return 0;
+    if(total <= 40) return 1;
+    if(total <= 60) return 2;
+    return 3;
+  }
+  function levelFromCat30(total){
+    if(total <= 7) return 0;
+    if(total <= 15) return 1;
+    if(total <= 23) return 2;
+    return 3;
+  }
+  function levelFromCat18(total){
+    if(total <= 4) return 0;
+    if(total <= 8) return 1;
+    if(total <= 13) return 2;
+    return 3;
+  }
+  function pill(levelIndex){
+    const l = LEVELS[levelIndex];
+    return `<span class="pill ${l.cls}">${l.name}</span>`;
+  }
+  function worstLevel(a,b){ return Math.max(a,b); }
+
+  const STRESS = [
+    { key:"work", title:"仕事（量・期限・割り込み・責任）", max:30, items:[
+      "締切が短く、常に時間に追われている","割り込みが多く、計画が崩れることが多い","仕事量が適正を超えていると感じる",
+      "責任だけ重く、裁量が少ない","ミスが許されないプレッシャーが強い","残業や持ち帰りが常態化している",
+      "優先順位が頻繁に変わり振り回される","成果が見えにくく、達成感が得にくい","休むと仕事が積み上がる感覚がある",
+      "仕事のことが頭から離れず睡眠に影響する",
+    ]},
+    { key:"boss", title:"上司（指示・詰め・気分・丸投げ）", max:30, items:[
+      "指示が曖昧で、後から『違う』と言われがち","昨日と今日で正解が変わる（ねじれ/ブレ）","詰め方が強く、萎縮してしまう",
+      "『任せた』と言いながら途中で取り上げられる","責任だけ押し付けられる（丸投げ）","修正が多く、好みの赤ペンになりがち",
+      "相談すると不機嫌・否定されることがある","評価や態度が気分に左右される","急な期限設定が多い（材料不足でも）",
+      "上司対応で心身が削れている実感がある",
+    ]},
+    { key:"team", title:"職場（相談しづらさ・孤立・空気・理不尽運用）", max:30, items:[
+      "相談しづらく、一人で抱えやすい","情報が共有されず、後出しが多い","役割分担が曖昧で負担が偏る",
+      "『言った言わない』が起こりやすい","空気が悪く、連携が減っている","理不尽なルールや慣習が残っている",
+      "助けを求めると評価が下がりそうで怖い","ミスの責任追及が先に来る文化がある","休みづらい／休むと気まずい",
+      "職場に行く前から憂うつになる",
+    ]},
+  ];
+
+  const SELF = [
+    { key:"other", title:"他人軸（承認・空気・評価）", max:18, items:[
+      "『嫌われたくない』が先に立ち、断れない","空気を読んで本音を飲み込むことが多い","評価や順位が気になり、落ち込む",
+      "相手の機嫌で自分の調子が左右される","褒められないと『価値がない』感覚になる","SNSや周囲と比べて焦ることがある",
+    ]},
+    { key:"boundary", title:"境界線（役割過剰・背負い込み）", max:18, items:[
+      "『自分がやるしかない』と背負いがち","頼まれごとに即答しがち","助けを求めるのが苦手（弱いと思われそう）",
+      "本当は無理でも、できるふりをしてしまう","家でも頭が仕事/役割で埋まっている","やるべきことが多すぎて優先順位が崩れる",
+    ]},
+    { key:"recovery", title:"回復（睡眠・余白・体のメンテ）", max:18, items:[
+      "睡眠が浅い／夜中に目が覚める","休んでいても罪悪感が出る","趣味や『何もしない時間』が減っている",
+      "体を動かす習慣がほとんどない","食事が雑になりがち（時間/気力がない）","疲れが抜けず、朝から重い",
+    ]},
+    { key:"relationship", title:"関係（頼れる人・話せる場）", max:18, items:[
+      "困っても相談相手が思い浮かばない","家族/パートナーに気持ちを言えない","職場で弱音を吐ける相手がいない",
+      "『迷惑をかけたくない』が強い","孤立感がある（自分だけ大変だと感じる）","人に会う/連絡する気力が落ちている",
+    ]},
+    { key:"purpose", title:"自分軸（価値観・選ぶ・決める）", max:18, items:[
+      "『本当はどうしたいか』が分からない","やりたいことより、やるべきことが先になる","人生や仕事の『目的』がぼやけている",
+      "今の選択が自分の意思か、周囲の期待か迷う","『このままでいいのか』が定期的に来る","小さくても『自分で選んだ』実感が少ない",
+    ]},
+  ];
+
+  function makeAccordion(containerId, data, ns){
+    const root = document.getElementById(containerId);
+    root.innerHTML = "";
+    data.forEach(cat=>{
+      const d = document.createElement("details");
+      d.open = true;
+      d.innerHTML = `<summary>${cat.title} <span class="pill" style="margin-left:8px">0〜${cat.max}</span></summary><div class="qwrap" id="${ns}_${cat.key}"></div>`;
+      root.appendChild(d);
+      const qw = d.querySelector(`#${ns}_${cat.key}`);
+      cat.items.forEach((q,i)=>{
+        const name = `${ns}_${cat.key}_${i}`;
+        const qdiv = document.createElement("div");
+        qdiv.className = "q";
+        qdiv.innerHTML = `<div class="qtxt">${i+1}. ${q}</div><div class="radios">${
+          SCALE.map(s=>`<label><input type="radio" name="${name}" value="${s.v}"> ${s.label}</label>`).join("")
+        }</div>`;
+        qw.appendChild(qdiv);
+      });
+    });
+  }
+  makeAccordion("stress-accordions", STRESS, "s");
+  makeAccordion("self-accordions", SELF, "m");
+
+  function getRadioValue(name){
+    const el = document.querySelector(`input[name="${name}"]:checked`);
+    return el ? parseInt(el.value,10) : 0;
+  }
+  function calcCategory(data, ns){
+    const cats = [];
+    let total = 0;
+    data.forEach(cat=>{
+      let sum = 0;
+      cat.items.forEach((_,i)=> sum += getRadioValue(`${ns}_${cat.key}_${i}`));
+      total += sum;
+      cats.push({key:cat.key, title:cat.title, sum, max:cat.max});
+    });
+    return {total, cats};
+  }
+  function collectTopItems(){
+    const items = [];
+    STRESS.forEach(cat=>cat.items.forEach((q,i)=>{
+      const v = getRadioValue(`s_${cat.key}_${i}`);
+      if(v>0) items.push({v, text:`【ストレス/${cat.title}】${q}`});
+    }));
+    SELF.forEach(cat=>cat.items.forEach((q,i)=>{
+      const v = getRadioValue(`m_${cat.key}_${i}`);
+      if(v>0) items.push({v, text:`【自己分析/${cat.title}】${q}`});
+    }));
+    items.sort((a,b)=>b.v-a.v);
+    return items.slice(0,10);
+  }
+  function nextActionText(overallLevel){
+    if(overallLevel===0) return "緑：今のやり方でOK。睡眠・相談先・運動を“最低ライン”で固定。";
+    if(overallLevel===1) return "黄：高い項目を1つだけ落とす。頼まれごとは即答せず「確認して折り返し」。";
+    if(overallLevel===2) return "橙：48時間は回復優先。優先順位/期限を文字で残して事故防止。";
+    return "赤：安全確保を最優先。範囲分け（今日できる/明日以降）＋相談予約を先に入れる。";
+  }
+
+  async function copyText(text){
+    try{ await navigator.clipboard.writeText(text); alert("コピーしました"); }
+    catch(e){
+      const ta=document.createElement("textarea"); ta.value=text; document.body.appendChild(ta);
+      ta.select(); document.execCommand("copy"); document.body.removeChild(ta); alert("コピーしました");
+    }
+  }
+
+  function render(){
+    const stress = calcCategory(STRESS,"s");
+    const self = calcCategory(SELF,"m");
+    const stressLevel = levelFromTotal90(stress.total);
+    const selfLevel = levelFromTotal90(self.total);
+    const overallLevel = worstLevel(stressLevel,selfLevel);
+
+    document.getElementById("k_stress").textContent = `${stress.total}`;
+    document.getElementById("k_self").textContent = `${self.total}`;
+    document.getElementById("k_overall").textContent = `${LEVELS[overallLevel].name}`;
+    document.getElementById("k_stress_level").innerHTML = pill(stressLevel);
+    document.getElementById("k_self_level").innerHTML = pill(selfLevel);
+    document.getElementById("k_overall_level").innerHTML = pill(overallLevel);
+
+    const bd=document.getElementById("breakdowns"); bd.innerHTML="";
+    const addBox=(title,sum,max,lvl)=>{
+      const div=document.createElement("div");
+      div.className="box";
+      div.innerHTML=`<div class="pill">${title}</div><div class="num">${sum}/${max}</div>${pill(lvl)}`;
+      bd.appendChild(div);
+    };
+    stress.cats.forEach(c=>addBox(`ストレス｜${c.title}`,c.sum,c.max,levelFromCat30(c.sum)));
+    self.cats.forEach(c=>addBox(`自己分析｜${c.title}`,c.sum,c.max,levelFromCat18(c.sum)));
+
+    const top=collectTopItems();
+    const list=document.getElementById("top_items"); list.innerHTML="";
+    top.forEach(it=>{ const li=document.createElement("li"); li.textContent=`${it.text}（${it.v}）`; list.appendChild(li); });
+
+    document.getElementById("next_action").textContent = nextActionText(overallLevel);
+
+    const prompt = `【ストレス】${stress.total}/90（${LEVELS[stressLevel].name}）\n`+
+      stress.cats.map(c=>`- ${c.title}: ${c.sum}/${c.max}`).join("\n")+
+      `\n\n【自己分析】${self.total}/90（${LEVELS[selfLevel].name}）\n`+
+      self.cats.map(c=>`- ${c.title}: ${c.sum}/${c.max}`).join("\n")+
+      `\n\n【総合】${LEVELS[overallLevel].name}\n`+
+      `\n期限：${document.getElementById("note_deadline").value.trim()||"（未入力）"}\n`+
+      `避けたい事故：${document.getElementById("note_risk").value.trim()||"（未入力）"}\n`+
+      `状況：${document.getElementById("note_context").value.trim()||"（未入力）"}\n\n`+
+      `この点数から、今日15分の一手と48時間/1週間の手順、送れる文面テンプレを作ってください（根性論禁止）。`;
+    document.getElementById("prompt").value = prompt;
+
+    window.__STATE__ = {stress,self,stressLevel,selfLevel,overallLevel};
+  }
+
+  function resetAll(){
+    document.querySelectorAll('input[type="radio"]').forEach(r=> r.checked=false);
+    ["note_deadline","note_risk","note_context","prompt"].forEach(id=>document.getElementById(id).value="");
+    ["k_stress","k_self","k_overall"].forEach(id=>document.getElementById(id).textContent="-");
+    ["k_stress_level","k_self_level","k_overall_level"].forEach(id=>document.getElementById(id).innerHTML="");
+    document.getElementById("breakdowns").innerHTML="";
+    document.getElementById("top_items").innerHTML="";
+    document.getElementById("next_action").textContent="";
+    window.__STATE__=null;
+  }
+
+  document.getElementById("btn_calc").addEventListener("click", ()=> render());
+  document.getElementById("btn_calc2").addEventListener("click", ()=> render());
+  document.getElementById("btn_reset").addEventListener("click", ()=> resetAll());
+  document.getElementById("btn_to_result").addEventListener("click", ()=>{ render(); switchTab("result"); });
+  document.getElementById("btn_to_result2").addEventListener("click", ()=>{ render(); switchTab("result"); });
+
+  document.getElementById("btn_copy_prompt").addEventListener("click", ()=>{
+    const text=document.getElementById("prompt").value;
+    if(!text) return alert("先に『計算する』を押してください");
+    copyText(text);
+  });
+  document.getElementById("btn_copy_result").addEventListener("click", ()=>{
+    if(!window.__STATE__) return alert("先に『計算する』を押してください");
+    const s=window.__STATE__;
+    const lines=[];
+    lines.push(`【ストレス総合】${s.stress.total}/90（${LEVELS[s.stressLevel].name}）`);
+    s.stress.cats.forEach(c=>lines.push(`- ${c.title}: ${c.sum}/${c.max}`));
+    lines.push(`【自己分析総合】${s.self.total}/90（${LEVELS[s.selfLevel].name}）`);
+    s.self.cats.forEach(c=>lines.push(`- ${c.title}: ${c.sum}/${c.max}`));
+    lines.push(`【総合】${LEVELS[s.overallLevel].name}`);
+    copyText(lines.join("\n"));
+  });
+
+  function switchTab(tab){
+    document.querySelectorAll(".tabbtn").forEach(b=> b.classList.remove("active"));
+    document.querySelector(`.tabbtn[data-tab="${tab}"]`).classList.add("active");
+    document.getElementById("tab-stress").style.display = (tab==="stress") ? "" : "none";
+    document.getElementById("tab-self").style.display = (tab==="self") ? "" : "none";
+    document.getElementById("tab-result").style.display = (tab==="result") ? "" : "none";
+  }
+  document.querySelectorAll(".tabbtn").forEach(b=>{
+    b.addEventListener("click", ()=>{
+      const tab=b.dataset.tab;
+      if(tab==="result") render();
+      switchTab(tab);
+    });
+  });
+</script>
+</body>
+</html>
