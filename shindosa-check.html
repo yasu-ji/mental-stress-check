@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>しんどさの原因を整理する簡易チェック</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --text: #1f2937;
+      --sub: #6b7280;
+      --line: #dbe3ef;
+      --accent: #2f5d9f;
+      --accent-soft: #eef4ff;
+      --warn-soft: #fff7e8;
+      --ok-soft: #eefbf3;
+      --shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+      --radius: 16px;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+      line-height: 1.7;
+    }
+
+    .wrap {
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 24px 16px 56px;
+    }
+
+    .hero, .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--line);
+    }
+
+    .hero {
+      padding: 24px;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: 1.8rem;
+      line-height: 1.35;
+    }
+
+    .lead {
+      margin: 0;
+      color: var(--sub);
+    }
+
+    .note {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: var(--warn-soft);
+      color: #694f1c;
+      font-size: 0.95rem;
+    }
+
+    .card {
+      padding: 20px;
+      margin-top: 16px;
+    }
+
+    h2 {
+      margin: 0 0 12px;
+      font-size: 1.2rem;
+    }
+
+    h3 {
+      margin: 0 0 10px;
+      font-size: 1.02rem;
+    }
+
+    .sub {
+      color: var(--sub);
+      font-size: 0.95rem;
+      margin-top: -4px;
+      margin-bottom: 8px;
+    }
+
+    .question {
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      margin-top: 14px;
+      background: #fbfcff;
+    }
+
+    .q-title {
+      margin: 0 0 10px;
+      font-weight: 700;
+    }
+
+    .choices {
+      display: grid;
+      gap: 8px;
+    }
+
+    .choice {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #fff;
+      cursor: pointer;
+    }
+
+    .choice input { transform: scale(1.08); }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    button {
+      border: none;
+      background: var(--accent);
+      color: white;
+      border-radius: 12px;
+      padding: 12px 18px;
+      font-size: 0.98rem;
+      cursor: pointer;
+    }
+
+    button.secondary {
+      background: #e8eef9;
+      color: var(--accent);
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .hidden { display: none; }
+
+    .result-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .result-box {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+    }
+
+    .label {
+      color: var(--sub);
+      font-size: 0.88rem;
+      margin-bottom: 6px;
+    }
+
+    .value {
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+
+    .soft {
+      background: var(--accent-soft);
+      border-left: 4px solid var(--accent);
+      padding: 14px;
+      border-radius: 12px;
+      margin-top: 12px;
+    }
+
+    textarea {
+      width: 100%;
+      margin-top: 10px;
+      min-height: 180px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      font: inherit;
+      resize: vertical;
+      background: #fbfcff;
+    }
+
+    ul.score-list {
+      margin: 10px 0 0;
+      padding-left: 18px;
+    }
+
+    .footer-note {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: #fff7f7;
+      color: #7a2c2c;
+      font-size: 0.93rem;
+      border: 1px solid #f2d7d7;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <h1>しんどさの原因を整理する簡易チェック</h1>
+      <p class="lead">今の自分が、どこで削られているのかをざっくり整理するための簡易チェックです。医療的な診断ではありません。結果を見ながら、まずの一手とChatGPTに貼る文を出します。</p>
+      <div class="note">0〜3で答えてください。<br>0：あまりない / 1：少しある / 2：けっこうある / 3：かなりある</div>
+    </section>
+
+    <section class="card" id="form-card">
+      <h2>1. ストレス側のチェック</h2>
+      <p class="sub">どこが負担になりやすいかを見ます。</p>
+      <div id="stress-questions"></div>
+
+      <h2 style="margin-top:22px;">2. 自己分析側のチェック</h2>
+      <p class="sub">どう疲れやすいか、自分の傾向を見ます。</p>
+      <div id="self-questions"></div>
+
+      <div class="actions">
+        <button id="calc-btn">結果を見る</button>
+        <button type="button" class="secondary" id="reset-btn">入力をリセット</button>
+      </div>
+    </section>
+
+    <section class="card hidden" id="result-card">
+      <h2>今回の結果</h2>
+
+      <div class="result-grid">
+        <div class="result-box">
+          <div class="label">負担が強いところ</div>
+          <div class="value" id="stress-top"></div>
+        </div>
+        <div class="result-box">
+          <div class="label">疲れやすい傾向</div>
+          <div class="value" id="self-top"></div>
+        </div>
+      </div>
+
+      <div class="soft">
+        <h3>今の状態</h3>
+        <p id="advice-state"></p>
+      </div>
+
+      <div class="result-box" style="margin-top:12px;">
+        <h3>まずの一手</h3>
+        <p id="advice-first-step"></p>
+      </div>
+
+      <div class="result-box" style="margin-top:12px;">
+        <h3>少し見ておきたいこと</h3>
+        <p id="advice-review-point"></p>
+      </div>
+
+      <div class="result-box" style="margin-top:12px;">
+        <h3>ChatGPTで整理する</h3>
+        <p class="sub">この文をそのまま貼って使えます。</p>
+        <textarea id="advice-prompt" readonly></textarea>
+        <div class="actions">
+          <button type="button" id="copy-prompt-btn">プロンプトをコピー</button>
+        </div>
+      </div>
+
+      <div class="result-box" style="margin-top:12px;">
+        <h3>参考：カテゴリごとの点数</h3>
+        <ul class="score-list" id="score-list"></ul>
+      </div>
+
+      <div class="footer-note">
+        このチェックは、今の自分をざっくり整理するための簡易的なものです。<br>
+        休んでもまったく改善しない、眠れない、食べられない、仕事や生活に大きく影響が出ている場合は、無理をせず医療機関や専門家にも相談してください。
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const choiceDefs = [
+      { value: 0, label: 'あまりない' },
+      { value: 1, label: '少しある' },
+      { value: 2, label: 'けっこうある' },
+      { value: 3, label: 'かなりある' }
+    ];
+
+    const stressQuestions = [
+      { id: 'work1', category: '仕事そのもの', text: '最近、仕事そのものが重たく感じることがある' },
+      { id: 'work2', category: '仕事そのもの', text: 'やることが多くて、気持ちまで重たくなることがある' },
+      { id: 'boss1', category: '上司とのやり取り', text: '上司とのやり取りが負担に感じることがある' },
+      { id: 'boss2', category: '上司に言われたことがあとまで残ることがある' },
+      { id: 'office1', category: '職場の空気', text: '職場の空気に気を遣って疲れることがある' },
+      { id: 'office2', category: 'まわりの雰囲気を読みすぎて疲れることがある' }
+    ];
+
+    const selfQuestions = [
+      { id: 'self1', category: '我慢してしまう', text: 'しんどくても、つい我慢してしまうことがある' },
+      { id: 'self2', category: '抱え込みやすい', text: '頼まれると断れず、自分で抱え込みやすい' },
+      { id: 'self3', category: '気を遣いすぎる', text: '人に気を遣いすぎて、あとでどっと疲れることがある' },
+      { id: 'self4', category: '自分だけの時間が足りない', text: '誰にも合わせない、自分だけの時間が足りないと感じる' }
+    ];
+
+    const adviceMap = {
+      '上司とのやり取り|我慢してしまう': {
+        state: '上司とのやり取りを、我慢しながら抱えているかもしれません。',
+        firstStep: '頭に残っているひと言を1つ書いてみてください。',
+        reviewPoint: '「まだ大丈夫」で飲み込んでいないか見てみてください。',
+        prompt: `私は「しんどさの原因を整理する簡易チェック」をやってみました。\n\nストレス側でいちばん高かったのは\n上司とのやり取りです。\n\n自己分析側でいちばん高かったのは\n我慢してしまうことです。\n\nこの結果から、\n今の私は何にいちばん疲れているのか、\nどこで無理をしやすいのか、\nまず何から見直したらいいのか、\n難しい言葉を使わずに整理してください。`
+      },
+      '上司とのやり取り|抱え込みやすい': {
+        state: '上司とのやり取りを、自分の中で抱え込みやすい状態かもしれません。',
+        firstStep: '今いちばん残っている場面を1つだけ外に出してみてください。',
+        reviewPoint: '全部受け止めず、まず切り分けてみてください。',
+        prompt: `私は「しんどさの原因を整理する簡易チェック」をやってみました。\n\nストレス側でいちばん高かったのは\n上司とのやり取りです。\n\n自己分析側でいちばん高かったのは\n抱え込みやすいことです。\n\nこの結果から、\n今の私は何にいちばん疲れているのか、\nどこで抱え込みやすいのか、\nまず何から見直したらいいのか、\n分かりやすく整理してください。`
+      },
+      '上司とのやり取り|気を遣いすぎる': {
+        state: '上司とのやり取りに、必要以上に気を遣って疲れているかもしれません。',
+        firstStep: '相手ではなく、自分に残っている言葉だけ見てみてください。',
+        reviewPoint: '相手の反応まで背負っていないか見てみてください。',
+        prompt: `私は「しんどさの原因を整理する簡易チェック」をやってみました。\n\nストレス側でいちばん高かったのは\n上司とのやり取りです。\n\n自己分析側でいちばん高かったのは\n気を遣いすぎることです。\n\nこの結果から、\n今の私は何に疲れているのか、\nどこで気を遣いすぎているのか、\nまず何から見直したらいいのか、\nやさしく整理してください。`
+      },
+      '上司とのやり取り|自分だけの時間が足りない': {
+        state: '上司とのやり取りが残ったまま、自分に戻る時間が足りないかもしれません。',
+        firstStep: '10分だけ、誰にも合わせない時間を取ってみてください。',
+        reviewPoint: '考える前に、気を切り替える時間を先に作ってみてください。',
+        prompt: `私は「しんどさの原因を整理する簡易チェック」をやってみました。\n\nストレス側でいちばん高かったのは\n上司とのやり取りです。\n\n自己分析側でいちばん高かったのは\n自分だけの時間が足りないことです。\n\nこの結果から、\n今の私は何に疲れているのか、\nなぜ疲れが抜けにくいのか、\nまず何から整えたらいいのか、\n分かりやすく整理してください。`
+      },
+      '職場の空気|我慢してしまう': {
+        state: '職場の空気に気を張りながら、しんどさを我慢しているかもしれません。',
+        firstStep: '今日は「無理に合わせる」を1回だけ減らしてみてください。',
+        reviewPoint: '我慢できることと、無理していないことは別です。',
+        prompt: `私は「しんどさの原因を整理する簡易チェック」をやってみました。\n\nストレス側でいちばん高かったのは\n職場の空気です。\n\n自己分析側でいちばん高かったのは\n我慢してしまうことです。\n\nこの結果から、\n今の私は何に疲れているのか、\nどこで無理をしやすいのか、\nまず何から見直したらいいのか、\n難しい言葉を使わずに整理してください。`
+      },
+      '職場の空気|抱え込みやすい': {
+        state: '職場の空気を受けやすく、そのまま抱え込みやすいかもしれません。',
+        firstStep: '全員に合わせようとしていないか、1つだけ場面を思い出してみてください。',
+        reviewPoint: '今日は一人だけ、話しやすい相手を基準にしてみてください。',
+        prompt: `私は「しんどさの原因を整理する簡易チェック」をやってみました。\n\nストレス側でいちばん高かったのは\n職場の空気です。\n\n自己分析側でいちばん高かったのは\n抱え込みやすいことです。\n\nこの結果から、\n今の私は何に疲れているのか、\nどこで抱え込みやすいのか、\nまず何から見直したらいいのか、\n分かりやすく整理してください。`
+      },
+      '職場の空気|気を遣いすぎる': {
+        state: '職場の空気に反応して、気を遣いすぎて疲れているかもしれません。',
+        firstStep: '空気を読みすぎていないかを見てみてください。',
+        reviewPoint: '全部を察しようとしないだけでも少し違います。',
+        prompt: `私は「しんどさの原因を整理する簡易チェック」をやってみました。\n\nストレス側でいちばん高かったのは\n職場の空気です。\n\n自己分析側でいちばん高かったのは\n気を遣いすぎることです。\n\nこの結果から、\n今の私は何に疲れているのか、\nどこで気を遣いすぎているのか、\nまず何を減らしたらいいのか、\nやさしく整理してください。`
+      },
+      '職場の空気|自分だけの時間が足りない': {
+        state: '職場で気を張る時間が長く、自分に戻る時間が足りないかもしれません。',
+        firstStep: '仕事の前後どちらかで、10分だけ一人の時間を作ってみてください。',
+        reviewPoint: '休みの長さより、誰にも合わせない時間があるか見てみてください。',
+        prompt: `私は「しんどさの原因を整理する簡易チェック」をやってみました。\n\nストレス側でいちばん高かったのは\n職場の空気です。\n\n自己分析側でいちばん高かったのは\n自分だけの時間が足りないことです。\n\nこの結果から、\n今の私は何に疲れているのか、\nなぜ疲れが抜けにくいのか、\nまず何から整えたらいいのか、\n分かりやすく整理してください。`
+      },
+      '仕事そのもの|我慢してしまう': {
+        state: '仕事の負担が重いうえに、我慢で押し切りやすいかもしれません。',
+        firstStep: '今日やることを3つまでに絞ってみてください。',
+        reviewPoint: '「まだやれるか」より「無理を普通にしていないか」を見てみてください。',
+        prompt: `私は「しんどさの原因を整理する簡易チェック」をやってみました。\n\nストレス側でいちばん高かったのは\n仕事そのものです。\n\n自己分析側でいちばん高かったのは\n我慢してしまうことです。\n\nこの結果から、\n今の私は何にいちばん疲れているのか、\nどこで無理をしやすいのか、\nまず何から見直したらいいのか、\n難しい言葉を使わずに整理してください。`
+      },
+      '仕事そのもの|抱え込みやすい': {
+        state: '仕事の重さに加えて、自分ひとりで抱え込みやすいかもしれません。',
+        firstStep: 'その場で全部引き受けず、まず手持ちを見てみてください。',
+        reviewPoint: '全部やるではなく、先にやるものだけ決めてみてください。',
+        prompt: `私は「しんどさの原因を整理する簡易チェック」をやってみました。\n\nストレス側でいちばん高かったのは\n仕事そのものです。\n\n自己分析側でいちばん高かったのは\n抱え込みやすいことです。\n\nこの結果から、\n今の私は何に疲れているのか、\nどこで抱え込みやすいのか、\nまず何を減らしたらいいのか、\n分かりやすく整理してください。`
+      },
+      '仕事そのもの|気を遣いすぎる': {
+        state: '仕事そのものに加えて、周りへの気遣いでも疲れているかもしれません。',
+        firstStep: '今日は1回だけ、必要以上に気を回すのをやめてみてください。',
+        reviewPoint: '仕事の負担と、気遣いの疲れを分けて見てみてください。',
+        prompt: `私は「しんどさの原因を整理する簡易チェック」をやってみました。\n\nストレス側でいちばん高かったのは\n仕事そのものです。\n\n自己分析側でいちばん高かったのは\n気を遣いすぎることです。\n\nこの結果から、\n今の私は何に疲れているのか、\n仕事の負担と気遣いの負担をどう分けて見たらいいのか、\nまず何から見直したらいいのか、\nやさしく整理してください。`
+      },
+      '仕事そのもの|自分だけの時間が足りない': {
+        state: '仕事の負担が重いうえに、自分に戻る時間が足りないかもしれません。',
+        firstStep: '10分だけ、何もしない時間を先に取ってみてください。',
+        reviewPoint: '休む時間の前に、自分だけの時間があるか見てみてください。',
+        prompt: `私は「しんどさの原因を整理する簡易チェック」をやってみました。\n\nストレス側でいちばん高かったのは\n仕事そのものです。\n\n自己分析側でいちばん高かったのは\n自分だけの時間が足りないことです。\n\nこの結果から、\n今の私は何に疲れているのか、\nなぜ疲れが抜けにくいのか、\nまず何から整えたらいいのか、\n分かりやすく整理してください。`
+      }
+    };
+
+    const defaultAdvice = {
+      state: '今は、いくつかの負担が重なっているかもしれません。',
+      firstStep: '今いちばん頭に残っていることを1つだけ書いてみてください。',
+      reviewPoint: '全部を一度に変えようとせず、まず何が重たいかを分けて見てみてください。',
+      prompt: `私は「しんどさの原因を整理する簡易チェック」をやってみました。\n\n結果を見ても、まだ自分ではうまく整理できません。\n\n今の私は何に疲れているのか、\nどこから見直したらいいのか、\n難しい言葉を使わずに整理してください。`
+    };
+
+    function renderQuestions(list, rootId, prefix) {
+      const root = document.getElementById(rootId);
+      list.forEach((q, idx) => {
+        const box = document.createElement('div');
+        box.className = 'question';
+        const name = `${prefix}-${q.id}`;
+
+        const title = document.createElement('p');
+        title.className = 'q-title';
+        title.textContent = `${idx + 1}. ${q.text}`;
+        box.appendChild(title);
+
+        const choices = document.createElement('div');
+        choices.className = 'choices';
+
+        choiceDefs.forEach(c => {
+          const label = document.createElement('label');
+          label.className = 'choice';
+          label.innerHTML = `<input type="radio" name="${name}" value="${c.value}"> <span>${c.label}</span>`;
+          choices.appendChild(label);
+        });
+
+        box.appendChild(choices);
+        root.appendChild(box);
+      });
+    }
+
+    function getAnswer(name) {
+      const checked = document.querySelector(`input[name="${name}"]:checked`);
+      return checked ? Number(checked.value) : null;
+    }
+
+    function calcTopByCategory(list, prefix) {
+      const sums = {};
+      for (const q of list) {
+        const val = getAnswer(`${prefix}-${q.id}`);
+        if (val === null) return null;
+        sums[q.category] = (sums[q.category] || 0) + val;
+      }
+      const entries = Object.entries(sums).sort((a, b) => b[1] - a[1]);
+      return { top: entries[0][0], entries };
+    }
+
+    function fillResults() {
+      const stressResult = calcTopByCategory(stressQuestions, 'stress');
+      const selfResult = calcTopByCategory(selfQuestions, 'self');
+
+      if (!stressResult || !selfResult) {
+        alert('すべての質問に答えてください。');
+        return;
+      }
+
+      const stressTop = stressResult.top;
+      const selfTop = selfResult.top;
+      const key = `${stressTop}|${selfTop}`;
+      const advice = adviceMap[key] || defaultAdvice;
+
+      document.getElementById('stress-top').textContent = stressTop;
+      document.getElementById('self-top').textContent = selfTop;
+      document.getElementById('advice-state').textContent = advice.state;
+      document.getElementById('advice-first-step').textContent = advice.firstStep;
+      document.getElementById('advice-review-point').textContent = advice.reviewPoint;
+      document.getElementById('advice-prompt').value = advice.prompt;
+
+      const scoreList = document.getElementById('score-list');
+      scoreList.innerHTML = '';
+      [...stressResult.entries, ...selfResult.entries].forEach(([name, score]) => {
+        const li = document.createElement('li');
+        li.textContent = `${name}：${score}点`;
+        scoreList.appendChild(li);
+      });
+
+      document.getElementById('result-card').classList.remove('hidden');
+      document.getElementById('result-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function resetAll() {
+      document.querySelectorAll('input[type="radio"]').forEach(el => el.checked = false);
+      document.getElementById('result-card').classList.add('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    document.getElementById('copy-prompt-btn').addEventListener('click', async () => {
+      const text = document.getElementById('advice-prompt').value;
+      try {
+        await navigator.clipboard.writeText(text);
+        alert('プロンプトをコピーしました');
+      } catch {
+        const textarea = document.getElementById('advice-prompt');
+        textarea.select();
+        document.execCommand('copy');
+        alert('プロンプトをコピーしました');
+      }
+    });
+
+    document.getElementById('calc-btn').addEventListener('click', fillResults);
+    document.getElementById('reset-btn').addEventListener('click', resetAll);
+
+    renderQuestions(stressQuestions, 'stress-questions', 'stress');
+    renderQuestions(selfQuestions, 'self-questions', 'self');
+  </script>
+</body>
+</html>
